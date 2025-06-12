@@ -1,5 +1,7 @@
 package com.javadevmz.jwt_demo.dto;
 
-public record LoginDto(String usernameOrEmail, String password) {
+import jakarta.validation.constraints.NotBlank;
+
+public record LoginDto(@NotBlank String usernameOrEmail,@NotBlank String password) {
 
 }

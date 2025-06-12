@@ -23,8 +23,9 @@ public class AuthService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtService;
 
-    public void register(RegisterDto dto) {
+    public String register(RegisterDto dto) {
         User user = new User();
         user.setName(dto.name());
         user.setUsername(dto.username());
@@ -41,10 +42,14 @@ public class AuthService {
         user.setRoles(Collections.singleton(Role.valueOf(dto.requestedRole())));
 
         repository.save(user);
+        return jwtService.generateJwt(user);
     }
 
-    public void login(LoginDto dto) {
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.usernameOrEmail(), passwordEncoder.encode(dto.password())));
+    public String login(LoginDto dto) {
+        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.usernameOrEmail(), dto.password()));
         SecurityContextHolder.getContext().setAuthentication(auth);
+        User user = repository.findByUsername(dto.usernameOrEmail());
+        if(user==null) user = repository.findByEmail(dto.usernameOrEmail());
+        return jwtService.generateJwt(user);
     }
 }

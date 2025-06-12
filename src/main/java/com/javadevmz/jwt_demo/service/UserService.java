@@ -19,7 +19,7 @@ public class UserService {
     public User getProfile() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(auth == null) throw new RuntimeException("Not authenticated");
-        UserDetails userDetails = (UserDetails) auth.getDetails();
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
         return repository.findByUsername(userDetails.getUsername());
     }
 

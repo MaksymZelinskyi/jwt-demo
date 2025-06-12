@@ -29,9 +29,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "register").permitAll()
+                        .requestMatchers("/login", "/register").permitAll()
                         .requestMatchers("/admin/*").hasRole("ADMIN")
-                        .anyRequest().hasAnyAuthority()
+                        .requestMatchers("/profile").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
@@ -43,6 +44,7 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(encoder());
         return authenticationProvider;
     }
 

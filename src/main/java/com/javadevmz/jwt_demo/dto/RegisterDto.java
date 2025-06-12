@@ -1,4 +1,6 @@
 package com.javadevmz.jwt_demo.dto;
 
-public record RegisterDto(String name, String username, String email, String password, String requestedRole) {
+import jakarta.validation.constraints.NotBlank;
+
+public record RegisterDto(@NotBlank String name, @NotBlank String username, @NotBlank String email, @NotBlank String password, String requestedRole) {
 }
